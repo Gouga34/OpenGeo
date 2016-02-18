@@ -18,6 +18,7 @@
 - [Installation](#installation)
 - [Démarrer et arrêter les services](#startstopServices)
 - [Créer une base de données spatiale](#createSpatialDB)
+- [Charger des données dans PostGIS en utilisant la ligne de commande](loadDataWithCommandeLine)
 
 # Installation <a id="installation"></a>
 
@@ -61,3 +62,20 @@ SELECT postgis_full_version();
 ```
 
 - La table de métadonnées spécifiques à PostGIS `spatial_ref_sys` doit se trouver dans le schéma `public`, sinon la base de données n'a pas été correctement créée.
+
+# Charger des données dans PostGIS en utilisant la ligne de commande <a id="loadDataWithCommandeLine"></a>
+- il faut connaitre le SRID du fichier. S'il est inconnu, on peut utiliser un service comme [prj2epsg.org](http://prj2epsg.org/) pour télécharger et convertir de `.prj` du shapefile en un code SRID.
+
+- Exécuter la commande `shp2pgsql` ( Si tout c'est bien passé, l'exécution devrait se terminer par `COMMIT` ) :
+```
+shp2pgsql -I -s <SRID> <PATH/TO/SHAPEFILE> <SCHEMA>.<DBTABLE> | psql -U postgres -d <DBNAME>
+```
+exemple :
+```
+shp2pgsql -I -s 2908 shapefilestests/nyc_roads/nyc_roads.shp roads | psql -U postgres -d opengeotest
+```
+
+- On peut vérifier que le contenue a bien été ajouté via pgAdmin ou avec la commande suivante :
+```
+psql -U <USERNAME> -d <DBNAME> -c "\d"
+```
