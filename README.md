@@ -1,15 +1,15 @@
 # OpenGeo Suite
 
 ## Suite logicielle contenant :
-- PostGIS/PostgreSQL
-- GeoServer
-- OpenLayers
+- [PostGIS](http://www.postgis.fr/)/[PostgreSQL](http://docs.postgresql.fr/)
+- [GeoServer](http://geoserver.org/)
+- [OpenLayers](http://openlayers.org/)
 - Autres composants secondaires :
-  - GeoWebCache
-  - Boundless SDK
-  - GeoGig
-  - GeoExt
-  - GeoScript
+  - [GeoWebCache](http://geowebcache.org/)
+  - [Boundless SDK](http://developers.boundlessgeo.com/)
+  - [GeoGig](http://geogig.org/)
+  - [GeoExt](http://www.geoext.org/)
+  - [GeoScript](http://geoscript.org/)
 
 ## Documentation officielle
 - [suite.opengeo.org](http://suite.opengeo.org/opengeo-docs/index.html)
