@@ -14,8 +14,12 @@
 ## Documentation officielle
 - [suite.opengeo.org](http://suite.opengeo.org/opengeo-docs/index.html)
 
+## Sommaire
+- [Installation](#installation)
+- [Démarrer et arrêter les services](#startstopServices)
+- [Créer une base de données spatiale](#createSpatialDB)
 
-# Installation
+# Installation <a id="installation"></a>
 
 ```
 sudo wget -qO- https://apt.boundlessgeo.com/gpg.key | apt-key add -
@@ -33,7 +37,7 @@ sudo apt-cache search opengeo
 sudo apt-get install opengeo-suite
 ```
 
-# Démarrer et arrêter les services
+# Démarrer et arrêter les services <a id="startstopServices"></a>
 ## Service Tomcat
 ```
 sudo service tomcat7 start|stop|restart
@@ -43,3 +47,17 @@ sudo service tomcat7 start|stop|restart
 ```
 sudo service postgresql start|stop|restart
 ```
+
+# Créer une base de données spatiale <a id="createSpatialDB"></a>
+
+- Créer une nouvelle base de données puis exécuter la requête suivante :
+```
+CREATE EXTENSION postgis;
+```
+
+- On peut vérifier que la base de données a été correctement crée en exécutant la fonction suivante :
+```
+SELECT postgis_full_version();
+```
+
+- La table de métadonnées spécifiques à PostGIS `spatial_ref_sys` doit se trouver dans le schéma `public`, sinon la base de données n'a pas été correctement créée.
