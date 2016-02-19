@@ -19,6 +19,7 @@
 - [Démarrer et arrêter les services](#startstopServices)
 - [Créer une base de données spatiale](#createSpatialDB)
 - [Charger des données dans PostGIS en utilisant la ligne de commande](loadDataWithCommandeLine)
+- [GeoServer](GeoServer)
 
 # Installation <a id="installation"></a>
 
@@ -79,3 +80,5 @@ shp2pgsql -I -s 2908 shapefilestests/nyc_roads/nyc_roads.shp roads | psql -U pos
 ```
 psql -U <USERNAME> -d <DBNAME> -c "\d"
 ```
+# GeoServer <a id="GeoServer"></a>
+- Cf documentation : [docs.geoserver.org](http://docs.geoserver.org/latest/en/user/)
