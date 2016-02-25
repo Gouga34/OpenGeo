@@ -21,6 +21,16 @@
 - [Charger des données dans PostGIS en utilisant la ligne de commande](#loadDataWithCommandeLine)
 - [GeoServer](#GeoServer)
   - [Styles des couches - SLD (Styled Layer Descriptor)](#SLD)
+- [PostGIS/PostgreSQL](#postGIS)
+  - [Introduction](#postGIS_intro)
+  - [Création d'une base de données](#postGIS_createdb)
+  - [Suppression d'une base de données](#postGIS_deletedb)
+  - [Accéder à une base](#postGIS_getdb)
+  - [Créer une nouvelle table](#postGIS_createTable)
+  - [Supprimer une table](#postGIS_deleteTable)
+  - [Remplir une table](#postGIS_fillTable)
+  - [Interroger une table](#postGIS_requestTable)
+  - [Données spatiales](#postGIS_spatialData)
 
 # Installation <a id="installation"></a>
 
@@ -150,4 +160,126 @@ Dans l'exemple suivant, on va colorer les polygones dans différents degrés de 
           </UserStyle>
   </NamedLayer>
 </StyledLayerDescriptor>
+```
+
+# PostGIS/PostgreSQL <a id="postGIS"></a>
+
+## Introduction <a id="postGIS_intro"></a>
+
+- documentation [PostGIS](http://postgis.net/docs/manual-2.2/)
+- documentation [PostgreSQL](http://docs.postgresql.fr/9.5/)
+
+Cette partie est un court et rapide résumé de PostgreSQL et PostGIS.
+
+PostgreSQL utilise un modèle client/serveur.
+- Le serveur gère les fichiers de la base de données, accepte les connexions clients, effectue les actions des clients. Le programme serveur est appelé `postgres`.
+- Le client va effectuer des actions sur la base de données en communiquant avec le serveur.
+
+Quand le client et le serveur ne sont pas sur la même machine, ils communiquent via TCP/IP. Le serveur démarre un nouveau processus pour chaque client.
+
+## Création d'une base de données <a id="postGIS_createdb"></a>
+
+En ligne de commande :
+```
+createdb ma_base
+```
+
+## Suppression d'une base de données <a id="postGIS_deletedb"></a>
+
+En ligne de commande :
+```
+dropdb ma_base
+```
+
+## Accéder à une base <a id="postGIS_getdb"></a>
+
+- Lancer psql :
+
+```
+$psql ma_base
+
+psql (9.3.11)
+Type "help" for help.
+
+ma_base=#
+```
+
+## Créer une nouvelle table <a id="postGIS_createTable"></a>
+```sql
+CREATE TABLE animaux (
+  type  varchar(80),
+  nom   varchar(80),
+  age   int
+  refuge varchar(80) references refuges
+);
+```
+
+Définir une table avec des emplacements géographiques :
+```sql
+CREATE TABLE refuges (
+  nom         varchar(80) primary key,
+  emplacement point
+);
+```
+
+## Supprimer une table <a id="postGIS_deleteTable"></a>
+```sql
+DROP TABLE nom_table;
+```
+
+## Remplir une table <a id="postGIS_fillTable"></a>
+```sql
+INSERT INTO animaux VALUES ('chien', 'Shana', 9, 'SPA Montpellier');
+INSERT INTO refuges VALUES ('SPA Montpellier', '(-194.0, 53.0)');
+```
+
+On peut aussi utiliser `COPY` pour charger de grandes quantités de données depuis des fichiers texte (Cf [COPY](http://docs.postgresqlfr.org/9.0/sql-copy.html)). Plus rapide car la commande est optimisée pour cet emplois.
+```sql
+COPY animaux FROM '/path/to/file/animaux_donnees';
+```
+Format du fichier :
+```
+chien Pepita  5
+chien Gold    6
+chat  Dickens 3
+```
+## Interroger une table <a id="postGIS_requestTable"></a>
+Comme en SQL :
+```sql
+SELECT * FROM animaux;
+SELECT * FROM animaux a, refuges r
+         WHERE a.refuge = r.nom;
+SELECT * FROM animaux
+         INNER JOIN refuges ON (animaux.refuge = refuges.nom);
+```
+
+## Données spatiales <a id="postGIS_spatialData"></a>
+
+- On a un type de données `geometry` et un type de données `geography`. Il faudra choisir en fonction de l'environnement et des données traitées quel est le type à utiliser (Cf documentation : [When to use Geography Data type over Geometry data type](http://postgis.net/docs/manual-2.2/using_postgis_dbmanagement.html#PostGIS_GeographyVSGeometry)). Il y a plusieurs types de représentation des données :
+```
+POINT(0 0)
+LINESTRING(0 0, 1 1, 1 2)
+POLYGON((0 0, 4 0, 4 4, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1))
+MULTIPOINT((0 0), (1 2))
+MULTILINESTRING((0 0, 1 1, 1 2) (2 3, 3 2, 5 4))
+MULTIPOLYGON((0 0, 4 0, 4 4, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1), (-1 -1, -1 -2, -2 -2, -1 -1))
+GEOMETRYCOLLECTION(POINT(0 0), LINESTRING(0 0, 1 1, 1 2))
+```
+
+
+```sql
+CREATE TABLE villes (
+      id int4,
+	  	nom varchar(25),
+      position geography(POINT,4326)
+);
+
+CREATE TABLE refuges (
+      id int4,
+	  	nom varchar(25),
+      position geometry
+);
+
+INSERT INTO refuges VALUES(1, 'SPA Béziers',ST_GeomFromText('POINT(0 0)') );
+INSERT INTO villes (name, location) VALUES (1, Montpellier, ST_GeographyFromText('SRID=4326;POINT(-110 30)') );
 ```
