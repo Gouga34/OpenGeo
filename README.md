@@ -31,6 +31,7 @@
   - [Remplir une table](#postGIS_fillTable)
   - [Interroger une table](#postGIS_requestTable)
   - [Données spatiales](#postGIS_spatialData)
+  - [Ajout de masse de données via la commande copy ](#postGIS_copy)
 
 # Installation <a id="installation"></a>
 
@@ -251,6 +252,12 @@ SELECT * FROM animaux a, refuges r
          WHERE a.refuge = r.nom;
 SELECT * FROM animaux
          INNER JOIN refuges ON (animaux.refuge = refuges.nom);
+```
+
+## Ajout de masse de données via la commande copy <a id="postGIS_copy"></a>
+
+```sql
+COPY parcelles FROM '/home/vidalmor/Documents/Perso/RandomPlotsGenerator/build-RandomPlotsGenerator-Desktop-Debug/plots.txt';
 ```
 
 ## Données spatiales <a id="postGIS_spatialData"></a>
