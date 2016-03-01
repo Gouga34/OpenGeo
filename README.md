@@ -19,8 +19,6 @@
 - [Démarrer et arrêter les services](#startstopServices)
 - [Créer une base de données spatiale](#createSpatialDB)
 - [Charger des données dans PostGIS en utilisant la ligne de commande](#loadDataWithCommandeLine)
-- [GeoServer](#GeoServer)
-  - [Styles des couches - SLD (Styled Layer Descriptor)](#SLD)
 - [PostGIS/PostgreSQL](#postGIS)
   - [Introduction](#postGIS_intro)
   - [Création d'une base de données](#postGIS_createdb)
@@ -32,6 +30,10 @@
   - [Interroger une table](#postGIS_requestTable)
   - [Données spatiales](#postGIS_spatialData)
   - [Ajout de masse de données via la commande copy ](#postGIS_copy)
+- [GeoServer](#GeoServer)
+  - [Styles des couches - SLD (Styled Layer Descriptor)](#SLD)
+  - [L'interface RESTful de GeoServer ](#GeoServerRESTful)
+
 
 # Installation <a id="installation"></a>
 
@@ -92,76 +94,7 @@ shp2pgsql -I -s 2908 shapefilestests/nyc_roads/nyc_roads.shp roads | psql -U pos
 ```
 psql -U <USERNAME> -d <DBNAME> -c "\d"
 ```
-# GeoServer <a id="GeoServer"></a>
-- Cf documentation : [docs.geoserver.org](http://docs.geoserver.org/latest/en/user/)
 
-## Styles des couches - SLD (Styled Layer Descriptor) <a id="SLD"></a>
-SLD est un descripteur de couches permettant de décrire le style des couches d'une carte.
-Dans l'exemple suivant, on va colorer les polygones dans différents degrés de vert en fonction du type de parcelles (blé, mais, orge). SLD est basé sur une syntaxe XML. On peut ainsi par exemple mettre en place différentes règles, `<Rule></Rule>`, avec par exemple la coloration de toutes les parcelles dont le type (`<ogc:PropertyName>type</ogc:PropertyName>`) est égal à `ble` (` <ogc:PropertyIsEqualTo></og:PropertyIsEqualTo>`) en vert clair.
-
-```xml
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<StyledLayerDescriptor version="1.0.0"
-    xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
-    xmlns="http://www.opengis.net/sld"
-    xmlns:ogc="http://www.opengis.net/ogc"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <NamedLayer>
-    <Name>Attribute-based polygon</Name>
-    <UserStyle>
-      <Title>Plot coloration</Title>
-      <FeatureTypeStyle>
-           <Rule>
-             <Name>Wheat</Name>
-             <Title>Wheat plots</Title>
-             <ogc:Filter>
-               <ogc:PropertyIsEqualTo>
-                 <ogc:PropertyName>type</ogc:PropertyName>
-                 <ogc:Literal>ble</ogc:Literal>
-               </ogc:PropertyIsEqualTo>
-             </ogc:Filter>
-             <PolygonSymbolizer>
-               <Fill>
-                 <CssParameter name="fill">#66FF66</CssParameter>
-               </Fill>
-             </PolygonSymbolizer>
-           </Rule>
-           <Rule>
-             <Name>Maize</Name>
-             <Title>Maize plots</Title>
-             <ogc:Filter>
-               <ogc:PropertyIsEqualTo>
-                 <ogc:PropertyName>type</ogc:PropertyName>
-                 <ogc:Literal>mais</ogc:Literal>
-               </ogc:PropertyIsEqualTo>
-             </ogc:Filter>
-             <PolygonSymbolizer>
-               <Fill>
-                 <CssParameter name="fill">#33CC33</CssParameter>
-               </Fill>
-             </PolygonSymbolizer>
-           </Rule>
-           <Rule>
-             <Name>Barley</Name>
-             <Title>Barley plot</Title>
-             <ogc:Filter>
-               <ogc:PropertyIsEqualTo>
-                 <ogc:PropertyName>type</ogc:PropertyName>
-                 <ogc:Literal>orge</ogc:Literal>
-               </ogc:PropertyIsEqualTo>
-             </ogc:Filter>
-             <PolygonSymbolizer>
-               <Fill>
-                 <CssParameter name="fill">#009900</CssParameter>
-               </Fill>
-             </PolygonSymbolizer>
-           </Rule>
-         </FeatureTypeStyle>
-          </UserStyle>
-  </NamedLayer>
-</StyledLayerDescriptor>
-```
 
 # PostGIS/PostgreSQL <a id="postGIS"></a>
 
@@ -290,3 +223,90 @@ CREATE TABLE refuges (
 INSERT INTO refuges VALUES(1, 'SPA Béziers',ST_GeomFromText('POINT(0 0)') );
 INSERT INTO villes (name, location) VALUES (1, Montpellier, ST_GeographyFromText('SRID=4326;POINT(-110 30)') );
 ```
+# GeoServer <a id="GeoServer"></a>
+- Cf documentation : [docs.geoserver.org](http://docs.geoserver.org/latest/en/user/)
+
+## Styles des couches - SLD (Styled Layer Descriptor) <a id="SLD"></a>
+SLD est un descripteur de couches permettant de décrire le style des couches d'une carte.
+Dans l'exemple suivant, on va colorer les polygones dans différents degrés de vert en fonction du type de parcelles (blé, mais, orge). SLD est basé sur une syntaxe XML. On peut ainsi par exemple mettre en place différentes règles, `<Rule></Rule>`, avec par exemple la coloration de toutes les parcelles dont le type (`<ogc:PropertyName>type</ogc:PropertyName>`) est égal à `ble` (` <ogc:PropertyIsEqualTo></og:PropertyIsEqualTo>`) en vert clair.
+
+```xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<StyledLayerDescriptor version="1.0.0"
+    xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+    xmlns="http://www.opengis.net/sld"
+    xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>Attribute-based polygon</Name>
+    <UserStyle>
+      <Title>Plot coloration</Title>
+      <FeatureTypeStyle>
+           <Rule>
+             <Name>Wheat</Name>
+             <Title>Wheat plots</Title>
+             <ogc:Filter>
+               <ogc:PropertyIsEqualTo>
+                 <ogc:PropertyName>type</ogc:PropertyName>
+                 <ogc:Literal>ble</ogc:Literal>
+               </ogc:PropertyIsEqualTo>
+             </ogc:Filter>
+             <PolygonSymbolizer>
+               <Fill>
+                 <CssParameter name="fill">#66FF66</CssParameter>
+               </Fill>
+             </PolygonSymbolizer>
+           </Rule>
+           <Rule>
+             <Name>Maize</Name>
+             <Title>Maize plots</Title>
+             <ogc:Filter>
+               <ogc:PropertyIsEqualTo>
+                 <ogc:PropertyName>type</ogc:PropertyName>
+                 <ogc:Literal>mais</ogc:Literal>
+               </ogc:PropertyIsEqualTo>
+             </ogc:Filter>
+             <PolygonSymbolizer>
+               <Fill>
+                 <CssParameter name="fill">#33CC33</CssParameter>
+               </Fill>
+             </PolygonSymbolizer>
+           </Rule>
+           <Rule>
+             <Name>Barley</Name>
+             <Title>Barley plot</Title>
+             <ogc:Filter>
+               <ogc:PropertyIsEqualTo>
+                 <ogc:PropertyName>type</ogc:PropertyName>
+                 <ogc:Literal>orge</ogc:Literal>
+               </ogc:PropertyIsEqualTo>
+             </ogc:Filter>
+             <PolygonSymbolizer>
+               <Fill>
+                 <CssParameter name="fill">#009900</CssParameter>
+               </Fill>
+             </PolygonSymbolizer>
+           </Rule>
+         </FeatureTypeStyle>
+          </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>
+```
+
+## L'interface RESTful de GeoServer <a id="GeoServerRESTful"></a>
+
+*Cette partie est en cours de rédaction*
+
+Geoserver fournit une interface RESTful.
+
+On peut lire des données dans un format XML et envoyer des données dans ce même format.
+Les opérations sur les ressources sont implémentées via les primitives basiques de HTTP :
+- Get pour lire
+- PUT, POST et DELETE pour faire des modifications
+
+Chaque ressource est représentée par une url de la forme :
+```
+http://GEOSERVER_HOME/rest/workspaces/topp
+```
+### Un exemple d'utilisation
