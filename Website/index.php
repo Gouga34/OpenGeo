@@ -1,21 +1,30 @@
 <?php
   include_once("GeoServerManager/GeoServerManager.php");
 
-  echo "GeoServerManager Post test";
+  echo "GeoServerManager Get test";
 
   $geoServerManager = new GeoServerManager();
 
   $geoServerManager->initializeSession();
   $geoServerManager->debuggingSettings();
 
-  echo "Post test";
+  echo "Get test";
 
-  $geoServerManager->postRequestSettings();
-
+  $geoServerManager->postSettings();
+  
   $data = "<workspace><name>newWorkspace</name></workspace>";
-
+  
   $geoServerManager->postData($data);
+  
+  $geoServerManager->closeSession();
+  
+  $geoServerManager->initializeSession();
+  $geoServerManager->debuggingSettings();
+  $geoServerManager->requestSettings();
+  
+  $geoServerManager->getSettings();
+  $geoServerManager->getData();
 
   $geoServerManager->closeSession();
 
-  echo "Post done - see log file";
+  echo "Get done - see log file";

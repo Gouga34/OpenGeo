@@ -30,19 +30,7 @@ class GeoServerManager {
   private function initiatecUrlSession() {
     $this->ch = curl_init($this->url);
   }
-
-  public function debuggingSettings() {
-    curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true); //options to return string
-    curl_setopt($this->ch, CURLOPT_VERBOSE, true);
-    curl_setopt($this->ch, CURLOPT_STDERR, $this->logFile); //logs curl messages
-  }
-
-  public function postRequestSettings() {
-    curl_setopt($this->ch, CURLOPT_POST, true);
-    $usernameAndPassword = GEOSERVER_USERNAME . ":" . GEOSERVER_PASSWORD;
-    curl_setopt($this->ch, CURLOPT_USERPWD, $usernameAndPassword);
-  }
-
+  
   public function initializeSession() {
     $this->openLogFile();
     $this->initiatecUrlSession();
@@ -53,9 +41,36 @@ class GeoServerManager {
     $this->closeFile();
   }
 
+  public function debuggingSettings() {
+    curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true); //options to return string
+    curl_setopt($this->ch, CURLOPT_VERBOSE, true);
+    curl_setopt($this->ch, CURLOPT_STDERR, $this->logFile); //logs curl messages
+  }
+  
+  public function requestSettings() {
+    $usernameAndPassword = GEOSERVER_USERNAME . ":" . GEOSERVER_PASSWORD;
+    curl_setopt($this->ch, CURLOPT_USERPWD, $usernameAndPassword);
+  }
+
+  public function postSettings() {
+      curl_setopt($this->ch, CURLOPT_POST, true);
+  }
+  
+  public function getSettings() {
+      curl_setopt($this->ch, CURLOPT_HTTPGET, True);
+  }
+
   public function postData($data) {
     curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(POST_HEADER));
     curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
+
+    $buffer = curl_exec($this->ch);
+
+    $this->checkForErrorAndProcessResult($buffer);
+  }
+  
+  public function getData() {
+    curl_setopt($this->ch, CURLOPT_HTTPHEADER, array("Accept: application/xml"));
 
     $buffer = curl_exec($this->ch);
 
@@ -65,11 +80,12 @@ class GeoServerManager {
   private function checkForErrorAndProcessResult($buffer) {
     $info = curl_getinfo($this->ch);
 
-    if($info['http_code'] != SUCCESS_CODE) {
+    if($info['http_code'] != OK_CODE && $info['http_code']!=CREATED_CODE ) {
       $message = REQUEST_ERROR_MESSAGE . "[" . $info['http_code'] . "]\n";
     } else {
       $message = REQUEST_SUCCESS_MESSAGE . "[" . $info['http_code'] . "]\n";
     }
+    
     $this->writeInFile($message);
     $this->writeInFile($buffer . "\n");
   }
