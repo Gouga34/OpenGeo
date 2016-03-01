@@ -310,3 +310,5 @@ Chaque ressource est représentée par une url de la forme :
 http://GEOSERVER_HOME/rest/workspaces/topp
 ```
 ### Un exemple d'utilisation
+
+Cf le dossier `Website/`. 
