@@ -1,7 +1,9 @@
 <?php
 
 define("SERVICE", "http://localhost:8080/geoserver/");
-define("REQUEST", "rest/workspaces");
+
+define("WORKSPACE_REQUEST", "rest/workspaces/");
+define("WORKSPACE", "newWorkspace");
 
 define("GEOSERVER_USERNAME", "admin");
 define("GEOSERVER_PASSWORD", "geoserver");
