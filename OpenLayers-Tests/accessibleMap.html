@@ -29,6 +29,7 @@ var map = new ol.Map({
     zoom: 2
   }),
   layers: [
+     new ol.layer.Tile({source: new ol.source.OSM()}),
     new ol.layer.Tile({
       source: new ol.source.TileWMS({
         projection: 'EPSG:4171', //HERE IS THE DATA SOURCE PROJECTION
