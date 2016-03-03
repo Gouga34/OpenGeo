@@ -1,0 +1,95 @@
+* Hostname was found in DNS cache
+* Hostname in DNS cache was stale, zapped
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 8080 (#4)
+* Server auth using Basic with user 'admin'
+> POST /geoserver/rest/workspaces/ HTTP/1.1
+Authorization: Basic YWRtaW46Z2Vvc2VydmVy
+Host: localhost:8080
+Accept: */*
+Content-type: application/xml
+Content-Length: 48
+
+* upload completely sent off: 48 out of 48 bytes
+< HTTP/1.1 201 Crée
+< Date: Wed, 02 Mar 2016 09:25:54 GMT
+< Location: http://localhost:8080/geoserver/rest/workspaces/newWorkspace
+* Server Noelios-Restlet-Engine/1.0..8 is not blacklisted
+< Server: Noelios-Restlet-Engine/1.0..8
+< Transfer-Encoding: chunked
+< 
+* Connection #4 to host localhost left intact
+
+----------------- POST http://localhost:8080/geoserver/rest/workspaces/ -----------------
+
+# Successful cURL request to [201]
+
+* Hostname was found in DNS cache
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 8080 (#5)
+* Server auth using Basic with user 'admin'
+> GET /geoserver/rest/workspaces/ HTTP/1.1
+Authorization: Basic YWRtaW46Z2Vvc2VydmVy
+Host: localhost:8080
+Accept: application/xml
+
+< HTTP/1.1 200 OK
+< Date: Wed, 02 Mar 2016 09:25:54 GMT
+* Server Noelios-Restlet-Engine/1.0..8 is not blacklisted
+< Server: Noelios-Restlet-Engine/1.0..8
+< Content-Type: application/xml
+< Transfer-Encoding: chunked
+< 
+* Connection #5 to host localhost left intact
+
+----------------- GET http://localhost:8080/geoserver/rest/workspaces/ -----------------
+
+# Successful cURL request to [200]
+<workspaces>
+  <workspace>
+    <name>newWorkspace</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/newWorkspace.xml" type="application/xml"/>
+  </workspace>
+  <workspace>
+    <name>test</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/test.xml" type="application/xml"/>
+  </workspace>
+  <workspace>
+    <name>acme</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/acme.xml" type="application/xml"/>
+  </workspace>
+  <workspace>
+    <name>nyc_roads</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/nyc_roads.xml" type="application/xml"/>
+  </workspace>
+  <workspace>
+    <name>nyc</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/nyc.xml" type="application/xml"/>
+  </workspace>
+  <workspace>
+    <name>opengeo</name>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost:8080/geoserver/rest/workspaces/opengeo.xml" type="application/xml"/>
+  </workspace>
+</workspaces>
+* Hostname was found in DNS cache
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 8080 (#6)
+* Server auth using Basic with user 'admin'
+> DELETE /geoserver/rest/workspaces/newWorkspace HTTP/1.1
+Authorization: Basic YWRtaW46Z2Vvc2VydmVy
+Host: localhost:8080
+Accept: */*
+Content-type: application/atom+xml
+
+< HTTP/1.1 200 OK
+< Date: Wed, 02 Mar 2016 09:25:54 GMT
+* Server Noelios-Restlet-Engine/1.0..8 is not blacklisted
+< Server: Noelios-Restlet-Engine/1.0..8
+< Transfer-Encoding: chunked
+< 
+* Connection #6 to host localhost left intact
+
+----------------- DELETE http://localhost:8080/geoserver/rest/workspaces/newWorkspace -----------------
+
+# Successful cURL request to [200]
+
