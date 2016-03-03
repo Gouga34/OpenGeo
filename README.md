@@ -163,21 +163,44 @@ DROP TABLE nom_table;
 ```
 
 ## Remplir une table <a id="postGIS_fillTable"></a>
+
+### Commande INSERT <a id="postGIS_fillTable_INSERT"></a>
+
 ```sql
 INSERT INTO animaux VALUES ('chien', 'Shana', 9, 'SPA Montpellier');
 INSERT INTO refuges VALUES ('SPA Montpellier', '(-194.0, 53.0)');
 ```
 
+### Ajout en masse de données via la commande copy <a id="postGIS_copy"></a>
+
 On peut aussi utiliser `COPY` pour charger de grandes quantités de données depuis des fichiers texte (Cf [COPY](http://docs.postgresqlfr.org/9.0/sql-copy.html)). Plus rapide car la commande est optimisée pour cet emplois.
 ```sql
 COPY animaux FROM '/path/to/file/animaux_donnees';
 ```
-Format du fichier :
+*Format du fichier :*
+
+
+ type    |     nom    |  âge    
+ ----- | -------- | ---
+ chien   |   Pepita   |  5    
+ chien   |   Gold     |  6    
+ chat    |   Dickens  |  3    
+
+
+Exemple :
+
+```sql
+COPY parcelles FROM '/home/vidalmor/Documents/Perso/RandomPlotsGenerator/plots.txt';
 ```
-chien Pepita  5
-chien Gold    6
-chat  Dickens 3
-```
+
+*Format du fichier :*
+
+ id      |     nom    |                 Coordonnées                |  type
+ ----- | -------- | ---------------------------------------- | ----
+ 0       |   plot1    |  POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))	  | mais  
+ 1       |   plot3    |  POLYGON((0 10, 10 10, 10 20, 0 20, 0 10)) | orge  
+
+
 ## Interroger une table <a id="postGIS_requestTable"></a>
 Comme en SQL :
 ```sql
@@ -186,12 +209,6 @@ SELECT * FROM animaux a, refuges r
          WHERE a.refuge = r.nom;
 SELECT * FROM animaux
          INNER JOIN refuges ON (animaux.refuge = refuges.nom);
-```
-
-## Ajout de masse de données via la commande copy <a id="postGIS_copy"></a>
-
-```sql
-COPY parcelles FROM '/home/vidalmor/Documents/Perso/RandomPlotsGenerator/build-RandomPlotsGenerator-Desktop-Debug/plots.txt';
 ```
 
 ## Données spatiales <a id="postGIS_spatialData"></a>
@@ -305,7 +322,7 @@ Geoserver fournit une interface RESTful.
 
 On peut lire des données dans un format XML et envoyer des données dans ce même format.
 Les opérations sur les ressources sont implémentées via les primitives basiques de HTTP :
-- Get pour lire
+- GET pour lire
 - PUT, POST et DELETE pour faire des modifications
 
 Chaque ressource est représentée par une url de la forme :
