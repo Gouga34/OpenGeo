@@ -33,6 +33,7 @@
 - [GeoServer](#GeoServer)
   - [Styles des couches - SLD (Styled Layer Descriptor)](#SLD)
   - [L'interface RESTful de GeoServer ](#GeoServerRESTful)
+  - [Le service WMS (Web Map Service) de GeoServer](#GeoServerWMS)
 
 
 # Installation <a id="installation"></a>
@@ -296,7 +297,9 @@ Dans l'exemple suivant, on va colorer les polygones dans différents degrés de 
 
 ## L'interface RESTful de GeoServer <a id="GeoServerRESTful"></a>
 
-*Cette partie est en cours de rédaction*
+--- *Cette partie est en cours de rédaction* ---
+
+Documentation officielle : [GeoServer - REST](http://docs.geoserver.org/stable/en/user/rest/index.html)
 
 Geoserver fournit une interface RESTful.
 
@@ -311,4 +314,46 @@ http://GEOSERVER_HOME/rest/workspaces/topp
 ```
 ### Un exemple d'utilisation
 
-Cf le dossier `Website/`. 
+#### Avec cURL, en PHP
+Le code source de l'exemple se trouve dans le dossier `Website-cURL/`.
+
+
+
+## Le service WMS (Web Map Service) de GeoServer <a id="GeoServerWMS"></a>
+
+--- *Cette partie est en cours de rédaction* ---
+
+Un service WMS permet d'obtenir des cartes de données géoréférencées à partir de serveurs de données. (Plus d'informations sur [Web Map Service](https://fr.wikipedia.org/wiki/Web_Map_Service))
+
+### Un exemple d'utilisation
+
+#### Avec OpenLayers3
+
+Documentation officielle de OpenLayers3 : [OpenLayers 3 - Doc](http://openlayers.org/en/v3.14.1/doc/).
+
+Le code source de l'exemple se trouve dans le dossier `OpenLayers-Tests/`.
+
+```javascript
+var map = new ol.Map({
+  target: 'map',
+  view: new ol.View({
+    projection: 'EPSG:3857', //view projection
+    center: [0, 0],
+    zoom: 2
+  }),
+  layers: [
+    new ol.layer.Tile({
+      source: new ol.source.TileWMS({
+        projection: 'EPSG:4171', //data source projection
+        url: 'http://localhost:8080/geoserver/wms',
+        params: {
+          'LAYERS': 'nyc:parcelles'
+        }
+      })
+    })
+  ]
+});
+```
+
+Dans l'exemple ci-dessus, on utilise le service wms.
+On va afficher la couche `nyc:parcelles` (espace de travail : nom de la couche) sur la carte `map`. Le champ `projection` correspond au système de coordonnées géographique utilisé ([wikipedia](https://fr.wikipedia.org/wiki/Syst%C3%A8me_de_coordonn%C3%A9es_(cartographie))).
