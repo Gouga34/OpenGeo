@@ -53,3 +53,23 @@ function getVectorLayer(startPoint, destPoint) {
     })
   });
 }
+
+function addPoint(event, startPoint) {
+  startPoint.setGeometry(new ol.geom.Point(event.coordinate));
+}
+
+function onClickAddPoint(map, startPoint) {
+  map.on('click', function(event) {
+      addPoint(event, startPoint);
+  });
+}
+
+function onClickClear(startPoint, destPoint) {
+  var clearButton = document.getElementById('clear');
+  clearButton.addEventListener('click', function(event) {
+    // Reset the "start" and "destination" features.
+    startPoint.setGeometry(null);
+    destPoint.setGeometry(null);
+    // Remove the result layer.
+  });
+}
