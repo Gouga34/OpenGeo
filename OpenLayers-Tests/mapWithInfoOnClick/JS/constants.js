@@ -8,3 +8,4 @@ const MAP_CENTER = [-112.50000000000003, 163.33333333333326];
 const MAP_ZOOM = 10;
 
 const FORMAT = 'image/png';
+const INFO_FORMAT = 'text/html';
