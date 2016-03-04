@@ -2,12 +2,8 @@
 <html>
 <head>
 <title>Single image WMS example</title>
-<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.6.0/ol.css" type="text/css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.6.0/ol.js"></script>
-
 </head>
 <body>
 <div class="container-fluid">
@@ -15,31 +11,67 @@
 <div class="row-fluid">
   <div class="span12">
     <div id="map" class="map"></div>
+    <button id="clear">clear</button>
   </div>
 </div>
 
 </div>
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.6.0/ol.js"></script>
+<script src="constants.js"></script>
+<script src="mapManager.js"></script>
+
 <script>
 
-var map = new ol.Map({
-  target: 'map',
-  view: new ol.View({
-    projection: 'EPSG:3857', //HERE IS THE VIEW PROJECTION
-    center: [0, 0],
-    zoom: 2
-  }),
-  layers: [
-     new ol.layer.Tile({source: new ol.source.OSM()}),
-    new ol.layer.Tile({
-      source: new ol.source.TileWMS({
-        projection: 'EPSG:4171', //HERE IS THE DATA SOURCE PROJECTION
-        url: 'http://localhost:8080/geoserver/wms',
-        params: {
-          'LAYERS': 'nyc:parcelles'
-        }
-      })
-    })
-  ]
+var map = generateAndGetMap();
+
+// The "start" and "destination" features.
+var startPoint = new ol.Feature();
+var destPoint = new ol.Feature();
+
+// The vector layer used to display the "start" and "destination" features.
+var vectorLayer = getVectorLayer(startPoint, destPoint);
+
+map.addLayer(vectorLayer);
+
+// A transform function to convert coordinates from EPSG:3857
+// to EPSG:4326.
+var transform = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
+var params = {
+  LAYERS: WMS_SERVICE_LAYERS,
+  FORMAT: FORMAT
+};
+
+// Register a map click listener.
+map.on('click', function(event) {
+  if (startPoint.getGeometry() == null) {
+    // First click.
+    startPoint.setGeometry(new ol.geom.Point(event.coordinate));
+  } else if (destPoint.getGeometry() == null) {
+    // Second click.
+    destPoint.setGeometry(new ol.geom.Point(event.coordinate));
+    // Transform the coordinates from the map projection (EPSG:3857)
+    // to the server projection (EPSG:4326).
+    var startCoord = transform(startPoint.getGeometry().getCoordinates());
+    var destCoord = transform(destPoint.getGeometry().getCoordinates());
+    var viewparams = [
+      'x1:' + startCoord[0], 'y1:' + startCoord[1],
+      'x2:' + destCoord[0], 'y2:' + destCoord[1]
+    ];
+    params.viewparams = viewparams.join(';');
+    result = new ol.layer.Image({
+    });
+    map.addLayer(result);
+  }
+});
+
+var clearButton = document.getElementById('clear');
+clearButton.addEventListener('click', function(event) {
+  // Reset the "start" and "destination" features.
+  startPoint.setGeometry(null);
+  destPoint.setGeometry(null);
+  // Remove the result layer.
 });
 
 </script>
