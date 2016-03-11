@@ -36,12 +36,11 @@ function generateAndGetMap(view, wmsLayer) {
 
 function getRequestUrl(wmsSource, evt, viewResolution) {
   if (INFO_FORMAT == JSON_FORMAT) {
-    var url = SERVER_URL
-            + "?FORMAT=" + FORMAT
-            + "&QUERY_LAYERS=" + WMS_SERVICE_LAYERS
-            + "&LAYERS=" + WMS_SERVICE_LAYERS
-            + "&INFO_FORMAT=" + INFO_FORMAT
-            + "&CRS=" + CRS;
+    var urlGeoServer = wmsSource.getGetFeatureInfoUrl(
+        evt.coordinate, viewResolution, 'EPSG:3857',
+        {'INFO_FORMAT': INFO_FORMAT});
+    var urlTab = urlGeoServer.split("http://localhost:8080/geoserver/wms");
+    var url = urlTab[1];
   } else if (INFO_FORMAT == HTML_FORMAT || INFO_FORMAT == TEXT_FORMAT) {
     var url = wmsSource.getGetFeatureInfoUrl(
         evt.coordinate, viewResolution, 'EPSG:3857',
@@ -52,7 +51,7 @@ function getRequestUrl(wmsSource, evt, viewResolution) {
 
 function getAndPrintJSONData(url) {
   $.get(
-    url,
+    SERVER_URL + url,
       // success callback
     function (data) {
           var elementData = JSON.parse(data);
